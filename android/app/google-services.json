@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "650924447820",
+    "project_id": "findmydoctor-6c0ec",
+    "storage_bucket": "findmydoctor-6c0ec.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:650924447820:android:beb32cb19e9ce5084dbce9",
+        "android_client_info": {
+          "package_name": "com.example.findmydoctor"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBas3Us5hcadA3rST6KTLXgyS9JzQJ2aq0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

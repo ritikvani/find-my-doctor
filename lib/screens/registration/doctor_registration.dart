@@ -134,7 +134,8 @@ class _DoctorRegistrationState extends State<DoctorRegistration> {
       "Clinic Address": clinicAddressController.text,
       "Consultation Fees": feesController.text,
     };
-    await handleSubmitForm(formData, emailController.text , passwordController.text);
+    await handleSubmitForm(formData, emailController.text , passwordController.text , "doctor");
+    FocusScope.of(context).unfocus();
   }
 
   Future<void> chooseImage() async {

@@ -90,7 +90,7 @@ class _PatientRegistrationState extends State<PatientRegistration> {
     };
 
 
-    await handleSubmitForm(formData,emailController.text, passwordController.text);
+    await handleSubmitForm(formData,emailController.text, passwordController.text, "patient");
     FocusScope.of(context).unfocus();
   }
 

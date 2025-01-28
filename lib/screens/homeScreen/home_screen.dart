@@ -1,6 +1,8 @@
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:findmydoctor/screens/homeScreen/components/doctors_list.dart';
 import 'package:findmydoctor/screens/login/login_screen.dart';
+import 'package:findmydoctor/screens/patientScreens/appointment_screen.dart';
+import 'package:findmydoctor/screens/profile/user_profile.dart';
 import 'package:findmydoctor/utility/common_colors.dart';
 import 'package:findmydoctor/utility/common_functions.dart';
 import 'package:flutter/material.dart';
@@ -19,12 +21,12 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   // Map<String, dynamic> userDetails = {};
   late final CustomStates userData;
-
-
+  var allDoctors ;
   @override
   void initState() {
     super.initState();
-     userData = Get.put(CustomStates(userToken: widget.userToken));
+    userData = Get.put(CustomStates(userToken: widget.userToken));
+    allDoctors = userData ;
     userData.getAllData();
   }
 
@@ -37,112 +39,111 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: Obx(
           () {
-
-            return
-              Center(
-                child: userData.userDetails.isEmpty
-                    ? CircularProgressIndicator()
-                    : SingleChildScrollView(
-                  child: Column(children: [
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Column(
-                        children: [
-                          Row(
+            return Center(
+              child: allDoctors.userDetails.isEmpty
+                  ? CircularProgressIndicator()
+                  : SingleChildScrollView(
+                      child: Column(children: [
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Column(
                             children: [
-                              CircleAvatar(
-                                radius: 30,
-                                backgroundColor: secondaryColor,
-                                child: Text(
-                                  getFirstLetterOfName(userData.userDetails["Name"]),
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 25,
-                                      color: Colors.black),
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              Row(
                                 children: [
-                                  Text(
-                                    "Hi, WelcomeBack",
-                                    style: TextStyle(
-                                        color: primaryColor, fontSize: 14),
+                                  CircleAvatar(
+                                    radius: 30,
+                                    backgroundColor: secondaryColor,
+                                    child: Text(
+                                      getFirstLetterOfName(
+                                          allDoctors.userDetails["Name"]),
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 25,
+                                          color: Colors.black),
+                                    ),
                                   ),
                                   const SizedBox(
-                                    height: 5,
+                                    width: 10,
                                   ),
-                                  Text(
-                                    userData.userDetails["Name"],
-                                    style: const TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Hi, WelcomeBack",
+                                        style: TextStyle(
+                                            color: primaryColor, fontSize: 14),
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                        allDoctors.userDetails["Name"],
+                                        style: const TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
                                   ),
+                                  const Spacer(),
+                                  CircleAvatar(
+                                      radius: 20,
+                                      backgroundColor: secondaryColor,
+                                      child: Image.asset(
+                                        "lib/assets/icons/alert.png",
+                                        width: 20,
+                                        height: 20,
+                                      )),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  CircleAvatar(
+                                      radius: 20,
+                                      backgroundColor: secondaryColor,
+                                      child: Image.asset(
+                                        "lib/assets/icons/setting.png",
+                                        width: 20,
+                                        height: 20,
+                                      ))
                                 ],
                               ),
-                              const Spacer(),
-                              CircleAvatar(
-                                  radius: 20,
-                                  backgroundColor: secondaryColor,
-                                  child: Image.asset(
-                                    "lib/assets/icons/alert.png",
-                                    width: 20,
-                                    height: 20,
-                                  )),
                               const SizedBox(
-                                width: 10,
+                                height: 10,
                               ),
-                              CircleAvatar(
-                                  radius: 20,
-                                  backgroundColor: secondaryColor,
-                                  child: Image.asset(
-                                    "lib/assets/icons/setting.png",
-                                    width: 20,
-                                    height: 20,
-                                  ))
+                              SizedBox(
+                                height: 80,
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    CustomComponent(
+                                      "Doctors",
+                                      "lib/assets/icons/sthesthescope.png",
+                                    ),
+                                    const SizedBox(
+                                      width: 20,
+                                    ),
+                                    CustomComponent(
+                                      "Favourite",
+                                      "lib/assets/icons/heart.png",
+                                    ),
+                                    const Spacer(),
+                                    customTextField(context)
+                                  ],
+                                ),
+                              ),
+                              const DoctorsList(),
                             ],
                           ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          SizedBox(
-                            height: 80,
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                CustomComponent(
-                                  "Doctors",
-                                  "lib/assets/icons/sthesthescope.png",
-                                ),
-                                const SizedBox(
-                                  width: 20,
-                                ),
-                                CustomComponent(
-                                  "Favourite",
-                                  "lib/assets/icons/heart.png",
-                                ),
-                                const Spacer(),
-                                customTextField(context)
-                              ],
-                            ),
-                          ),
-                          const DoctorsList(),
-                        ],
-                      ),
-                    )
-                  ]),
-                ),
-              ) ;
+                        )
+                      ]),
+                    ),
+            );
           },
-
         ),
       ),
     );
@@ -155,14 +156,15 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           // User Profile Header
           UserAccountsDrawerHeader(
-            accountName: Text(userData.userDetails["Name"] ?? "Not available"),
-            accountEmail: Text(userData.userDetails["Email"] ?? "Not available"),
+            accountName: Text(allDoctors.userDetails["Name"] ?? "Not available"),
+            accountEmail:
+                Text(allDoctors.userDetails["Email"] ?? "Not available"),
             currentAccountPicture: CircleAvatar(
               backgroundImage:
                   const NetworkImage('https://example.com/profile-picture.jpg'),
               // Replace with a valid URL or asset
               child: Text(
-                getFirstLetterOfName(userData.userDetails["Name"] ?? ""),
+                getFirstLetterOfName(allDoctors.userDetails["Name"] ?? ""),
                 // Fallback initial
                 style: const TextStyle(fontSize: 24, color: Colors.white),
               ),
@@ -180,17 +182,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
           // Drawer Items
           ListTile(
-            leading: const Icon(Icons.home),
-            title: const Text('Home'),
+            leading: const Icon(Icons.person),
+            title: const Text('Profile'),
             onTap: () {
-              Navigator.pop(context); // Close the drawer
+             Get.to(()=>UserProfile()); // Close the drawer
             },
           ),
           ListTile(
             leading: const Icon(Icons.medical_services),
-            title: const Text('My Appoitments'),
+            title: const Text('My Appointments'),
             onTap: () {
-              Navigator.pop(context); // Close the drawer
+              Get.to(() => const AppointmentScreen()); // Close the drawer
             },
           ),
 
@@ -219,7 +221,11 @@ class _HomeScreenState extends State<HomeScreen> {
       width: MediaQuery.of(context).size.width *
           0.5, // Use double.infinity for better readability
       child: TextField(
+       // onChanged: (value) {
+       //   _filterSearchResults(value)
+       // },
         decoration: InputDecoration(
+
           hintText: "Search here...",
           suffixIcon: Image.asset(
             "lib/assets/icons/search.png",
@@ -238,6 +244,17 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+  // void _filterSearchResults(String query) {
+  //   if (query.isEmpty) {
+  //     return;
+  //   } else {
+  //     setState(() {
+  //       allDoctors = userData.where((item) => item.toLowerCase().contains(query.toLowerCase()))
+  //           .toList();
+  //     });
+  //   }
+  // }
 
   Column CustomComponent(String customLabel, String imageUrl) {
     return Column(
@@ -259,20 +276,20 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
     );
   }
-
-  // Future<void> getAllData() async {
-  //   try {
-  //     FirebaseFirestore firestore = FirebaseFirestore.instance;
-  //     var userData = await firestore
-  //         .collection("registeredPatients")
-  //         .doc(widget.userToken)
-  //         .get();
-  //     print("${userData.data()} this is your data ");
-  //
-  //     setState(() => {userDetails = userData.data()!});
-  //   } catch (e) {
-  //     // Handle and print any errors.
-  //     print("Error fetching data: $e");
-  //   }
-  // }
+//
+// Future<void> getAllData() async {
+//   try {
+//     FirebaseFirestore firestore = FirebaseFirestore.instance;
+//     var userData = await firestore
+//         .collection("registeredPatients")
+//         .doc(widget.userToken)
+//         .get();
+//     print("${userData.data()} this is your data ");
+//
+//     setState(() => {userDetails = userData.data()!});
+//   } catch (e) {
+//     // Handle and print any errors.
+//     print("Error fetching data: $e");
+//   }
+// }
 }

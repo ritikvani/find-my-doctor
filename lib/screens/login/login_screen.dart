@@ -1,9 +1,11 @@
 import 'package:findmydoctor/screens/homeScreen/home_screen.dart';
+import 'package:findmydoctor/utility/common_button.dart';
 import 'package:findmydoctor/utility/common_colors.dart';
 import 'package:findmydoctor/utility/common_textfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -39,9 +41,14 @@ class _LoginScreenState extends State<LoginScreen> {
               "lib/assets/images/welcome.png",
               scale: 2.7,
             ),
-            customTextField(labelText: "Email", hintText: "Enter your email address", controller: emailController),
-            customTextField(labelText: "Password", hintText: "Enter your password", controller: passwordController),
-
+            customTextField(
+                labelText: "Email",
+                hintText: "Enter your email address",
+                controller: emailController),
+            customTextField(
+                labelText: "Password",
+                hintText: "Enter your password",
+                controller: passwordController),
             const SizedBox(
               height: 5,
             ),
@@ -52,12 +59,11 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(
               height: 5,
             ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(200.0, 40.0)),
-              onPressed: handleLogin,
-              child: const Text("LogIn"),
-            )
+            CommonButton(
+                buttonText: "Log In",
+                backgroundColor: const Color(0xff2260FF),
+                onPressed: handleLogin,
+                textColor: Color(0xffFFFFFF)),
           ]),
         ),
       ),
@@ -65,6 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> handleLogin() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     FirebaseAuth firebaseAuth = FirebaseAuth.instance;
     if (emailController.text.isEmpty || passwordController.text.isEmpty) {
       setState(() => {error = true});
@@ -74,15 +81,17 @@ class _LoginScreenState extends State<LoginScreen> {
     FocusScope.of(context).unfocus();
     // print(emailController.text + passwordController.text + "this is your credentials");
     try {
-      var response =  await firebaseAuth.signInWithEmailAndPassword(
+      var response = await firebaseAuth.signInWithEmailAndPassword(
         email: emailController.text,
         password: passwordController.text,
       );
 
-       String? uniqueKey = response.user?.uid;
-      if(uniqueKey !=null){
-        Get.to(HomeScreen(userToken: uniqueKey,));
-
+      String? uniqueKey = response.user?.uid;
+      if (uniqueKey != null) {
+        Get.to(HomeScreen(
+          userToken: uniqueKey,
+        ));
+        sharedPreferences.setString("token", uniqueKey);
       }
       print("Login successful ${response}");
     } on FirebaseAuthException catch (e) {

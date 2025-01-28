@@ -59,13 +59,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 40),
-            CommonButton(
-                buttonText: "Log In",
-                backgroundColor: const Color(0xff2260FF),
-                onPressed: () {
-                  Get.to(() => LogInScreen()); // Corrected here
-                },
-                textColor: Color(0xffFFFFFF)),
+            // CommonButton(
+            //     buttonText: "Log In",
+            //     backgroundColor: const Color(0xff2260FF),
+            //     onPressed: () {
+            //       Get.to(() => LogInScreen()); // Corrected here
+            //     },
+            //     textColor: Color(0xffFFFFFF)),
             const SizedBox(height: 10),
             CommonButton(
                 buttonText: "Sign Up",

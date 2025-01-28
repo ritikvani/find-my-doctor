@@ -26,10 +26,18 @@ class DoctorsInformation extends StatelessWidget {
   final String phoneNumber;
   final String city;
 
-
   @override
   Widget build(BuildContext context) {
-    final TextEditingController fullnameController = TextEditingController();
+    final TextEditingController fullNameController = TextEditingController();
+    final TextEditingController emailController = TextEditingController();
+    final TextEditingController phoneController = TextEditingController();
+    final Map<String, dynamic> doctorDetails = {
+      "doctorName": doctorName,
+      "doctorEmail": email,
+      "doctorClinicAddress": clinicAddress,
+      "doctorPhoneNumber": phoneNumber,
+      "clinicAddress": clinicAddress
+    };
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -106,7 +114,6 @@ class DoctorsInformation extends StatelessWidget {
                       ],
                     ),
                     const Spacer(),
-
                   ],
                 ),
                 const SizedBox(height: 5),
@@ -122,14 +129,17 @@ class DoctorsInformation extends StatelessWidget {
                 _buildInfoRow(
                     Icons.phone, phoneNumber, "Phone number not available"),
                 _buildInfoRow(Icons.location_city, city, "City not available"),
-                _buildInfoRow(Icons.monetization_on, "$consultationFees/-" , "Consultation fees not available"),
+                _buildInfoRow(Icons.monetization_on, "$consultationFees/-",
+                    "Consultation fees not available"),
                 SizedBox(
                   height: 10,
                 ),
                 ElevatedButton(
                     onPressed: () {
-                      customBottomSheet(context ,fullnameController) ;
-                    }, child: Text("Book an Appointment"))
+                      customBottomSheet(context, fullNameController,
+                          emailController, phoneController ,doctorDetails: doctorDetails);
+                    },
+                    child: Text("Book an Appointment"))
               ],
             ),
           ),

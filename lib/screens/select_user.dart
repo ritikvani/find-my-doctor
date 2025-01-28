@@ -109,13 +109,11 @@ class _SelectUSerState extends State<SelectUSer> {
             const SizedBox(height: 60),
             ElevatedButton(
               onPressed: () {
-                if (selected == "patient"){
-                  Get.to(PatientRegistration());
-                }else{
-                  Get.to(const DoctorRegistration()) ;
+                if (selected == "patient") {
+                  Get.to(const PatientRegistration());
+                } else {
+                  Get.to(const DoctorRegistration());
                 }
-
-
               },
               style: ElevatedButton.styleFrom(primary: secondaryColor),
               child: const Text(

@@ -6,17 +6,24 @@ import 'package:get/get_core/src/get_main.dart';
 import '../screens/login/login_screen.dart';
 
 Future<void> handleSubmitForm(
-    Map<String, dynamic> userDetails, String email, var password) async {
+    Map<String, dynamic> userDetails, String email, var password, String user) async {
   try {
     FirebaseFirestore fireStore = FirebaseFirestore.instance;
     FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+
+    // Create a user with FirebaseAuth
     var response = await firebaseAuth.createUserWithEmailAndPassword(
         email: email, password: password);
     String? uniqueKey = response.user?.uid;
-    await fireStore
-        .collection("registeredPatients")
-        .doc(uniqueKey)
-        .set(userDetails).then((e) => Get.to(LoginScreen()));
+
+    // Determine the collection based on the user type
+    String collectionName =
+    user == "patient" ? "registeredPatients" : "allRegisteredDoctors";
+
+    // Add user details to the appropriate Firestore collection
+    await fireStore.collection(collectionName).doc(uniqueKey).set(userDetails).then((_) {
+      Get.to(LoginScreen());
+    });
 
     print("Data successfully added to Firestore!");
 
@@ -24,6 +31,7 @@ Future<void> handleSubmitForm(
     print("Error in storing the data: ${error.toString()}");
   }
 }
+
 
 getFirstLetterOfName(String name) {
   if (name.isEmpty) {

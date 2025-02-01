@@ -7,6 +7,7 @@ import 'package:findmydoctor/utility/common_colors.dart';
 import 'package:findmydoctor/utility/common_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../stateManagement/getx_file.dart';
 
@@ -41,7 +42,16 @@ class _HomeScreenState extends State<HomeScreen> {
           () {
             return Center(
               child: allDoctors.userDetails.isEmpty
-                  ? CircularProgressIndicator()
+                  ?
+            Container(
+              color: Colors.black.withOpacity(0.5),
+              child:  Center(
+                child:LoadingAnimationWidget.newtonCradle(
+                  color: Colors.white,
+                  size: 150,
+                ),
+              ),
+            )
                   : SingleChildScrollView(
                       child: Column(children: [
                         const SizedBox(

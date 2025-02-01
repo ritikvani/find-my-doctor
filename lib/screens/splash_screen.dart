@@ -1,3 +1,4 @@
+import 'package:findmydoctor/screens/login/login_screen.dart';
 import 'package:findmydoctor/screens/select_user.dart';
 import 'package:findmydoctor/screens/welcome_screen.dart';
 import 'package:findmydoctor/utility/common_colors.dart';
@@ -18,7 +19,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Future.delayed(Duration(seconds: 2), () {
-      Get.off(() => SelectUSer());
+      Get.off(() => LoginScreen());
     });
   }
 

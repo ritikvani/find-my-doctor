@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:findmydoctor/utility/common_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppointmentScreen extends StatefulWidget {
@@ -37,9 +38,13 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
         ),
       ),
       body: loading
-          ? const Center(
-        child: CircularProgressIndicator(),
-      )
+          ?    Center(
+        child:LoadingAnimationWidget.newtonCradle(
+          color: Colors.white,
+          size: 150,
+        ),
+
+    )
           : myAppointments.isEmpty
           ? const Center(
         child: Text(

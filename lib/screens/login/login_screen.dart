@@ -8,6 +8,8 @@ import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../userModule/doctor/dashboard_screen.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
@@ -21,7 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool error = false;
   String errorMessage = "";
   bool _isLoading = false;
-
+  bool patient = true ;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,8 +67,24 @@ class _LoginScreenState extends State<LoginScreen> {
                   CommonButton(
                       buttonText: "Log In",
                       backgroundColor: const Color(0xff2260FF),
-                      onPressed: handleLogin,
+                      onPressed: (){
+                        handleLogin(isPatient: patient);
+                      },
                       textColor: const Color(0xffFFFFFF)),
+                  const SizedBox(height: 5),
+                  TextButton(
+                    onPressed: () {
+                      setState(()=>{
+                        patient = !patient
+                      });
+                    },
+                    child: Text(
+                      patient?  "Log in as a doctor" : "Log in as a patient",
+                      style:
+                      TextStyle(fontWeight: FontWeight.w500, color: primaryColor, fontSize: 16),
+                    ),
+                  ),
+
                 ],
               ),
             ),
@@ -86,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Future<void> handleLogin() async {
+  Future<void> handleLogin({required bool isPatient}) async {
     setState(() {
       _isLoading = true;
       error = false;
@@ -112,10 +130,15 @@ class _LoginScreenState extends State<LoginScreen> {
         password: passwordController.text,
       );
 
+
+      print( "this is response $response");
       String? uniqueKey = response.user?.uid;
       if (uniqueKey != null) {
         sharedPreferences.setString("token", uniqueKey);
-        Get.off(() => HomeScreen(userToken: uniqueKey));
+        sharedPreferences.setBool("isPatient", isPatient);
+        Get.to(() =>
+
+            isPatient ? HomeScreen(userToken: uniqueKey) :  DoctorsDashBoard(token: uniqueKey,));
       }
     } on FirebaseAuthException catch (e) {
       setState(() {

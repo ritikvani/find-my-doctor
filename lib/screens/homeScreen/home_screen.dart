@@ -3,11 +3,14 @@ import 'package:findmydoctor/screens/homeScreen/components/doctors_list.dart';
 import 'package:findmydoctor/screens/login/login_screen.dart';
 import 'package:findmydoctor/screens/patientScreens/appointment_screen.dart';
 import 'package:findmydoctor/screens/profile/user_profile.dart';
+import 'package:findmydoctor/screens/userModule/doctor/dashboard_screen.dart';
+import 'package:findmydoctor/screens/userModule/utility/custom_darwer.dart';
 import 'package:findmydoctor/utility/common_colors.dart';
 import 'package:findmydoctor/utility/common_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../stateManagement/getx_file.dart';
 
@@ -21,37 +24,48 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   // Map<String, dynamic> userDetails = {};
+  final DoctorController doctorController = Get.put(DoctorController());
   late final CustomStates userData;
-  var allDoctors ;
+  var userDetails;
+  bool? isUserPatient;
+
   @override
   void initState() {
     super.initState();
+    getUserType();
     userData = Get.put(CustomStates(userToken: widget.userToken));
-    allDoctors = userData ;
+    doctorController.getAllDoctorsList();
+    userDetails = userData;
     userData.getAllData();
+  }
+
+  void getUserType() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    setState(() => {isUserPatient = sharedPreferences.getBool("isPatient")});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      drawer: customDrawer(context),
-      appBar: AppBar(),
+      drawer: customDrawer(context , userDetails),
+      appBar: AppBar(
+        title: Text(isUserPatient! ? "patient" : "doctor"),
+      ),
       body: SafeArea(
         child: Obx(
           () {
             return Center(
-              child: allDoctors.userDetails.isEmpty
-                  ?
-            Container(
-              color: Colors.black.withOpacity(0.5),
-              child:  Center(
-                child:LoadingAnimationWidget.newtonCradle(
-                  color: Colors.white,
-                  size: 150,
-                ),
-              ),
-            )
+              child: userDetails.userDetails.isEmpty
+                  ? Container(
+                      color: Colors.black.withOpacity(0.5),
+                      child: Center(
+                        child: LoadingAnimationWidget.newtonCradle(
+                          color: Colors.white,
+                          size: 150,
+                        ),
+                      ),
+                    )
                   : SingleChildScrollView(
                       child: Column(children: [
                         const SizedBox(
@@ -68,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     backgroundColor: secondaryColor,
                                     child: Text(
                                       getFirstLetterOfName(
-                                          allDoctors.userDetails["Name"]),
+                                          userDetails.userDetails["Name"]),
                                       style: const TextStyle(
                                           fontWeight: FontWeight.w500,
                                           fontSize: 25,
@@ -91,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         height: 5,
                                       ),
                                       Text(
-                                        allDoctors.userDetails["Name"],
+                                        userDetails.userDetails["Name"],
                                         style: const TextStyle(
                                             color: Colors.black,
                                             fontSize: 16,
@@ -159,71 +173,72 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Drawer customDrawer(BuildContext context) {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          // User Profile Header
-          UserAccountsDrawerHeader(
-            accountName: Text(allDoctors.userDetails["Name"] ?? "Not available"),
-            accountEmail:
-                Text(allDoctors.userDetails["Email"] ?? "Not available"),
-            currentAccountPicture: CircleAvatar(
-              backgroundImage:
-                  const NetworkImage('https://example.com/profile-picture.jpg'),
-              // Replace with a valid URL or asset
-              child: Text(
-                getFirstLetterOfName(allDoctors.userDetails["Name"] ?? ""),
-                // Fallback initial
-                style: const TextStyle(fontSize: 24, color: Colors.white),
-              ),
-            ),
-            decoration: const BoxDecoration(
-              color: Colors.blue,
-              image: DecorationImage(
-                image: NetworkImage(
-                  'https://example.com/background-image.jpg', // Optional background image
-                ),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-
-          // Drawer Items
-          ListTile(
-            leading: const Icon(Icons.person),
-            title: const Text('Profile'),
-            onTap: () {
-             Get.to(()=>UserProfile()); // Close the drawer
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.medical_services),
-            title: const Text('My Appointments'),
-            onTap: () {
-              Get.to(() => const AppointmentScreen()); // Close the drawer
-            },
-          ),
-
-          ListTile(
-            leading: const Icon(Icons.settings),
-            title: const Text('Settings'),
-            onTap: () {
-              Navigator.pop(context); // Close the drawer
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.logout),
-            title: const Text('Logout'),
-            onTap: () {
-              Get.offAll(const LoginScreen());
-            },
-          ),
-        ],
-      ),
-    );
-  }
+  // Drawer customDrawer(BuildContext context ) {
+  //   return Drawer(
+  //     child: ListView(
+  //       padding: EdgeInsets.zero,
+  //       children: [
+  //         // User Profile Header
+  //         UserAccountsDrawerHeader(
+  //           accountName:
+  //               Text(userDetails.userDetails["Name"] ?? "Not available"),
+  //           accountEmail:
+  //               Text(userDetails.userDetails["Email"] ?? "Not available"),
+  //           currentAccountPicture: CircleAvatar(
+  //             backgroundImage:
+  //                 const NetworkImage('https://example.com/profile-picture.jpg'),
+  //             // Replace with a valid URL or asset
+  //             child: Text(
+  //               getFirstLetterOfName(userDetails.userDetails["Name"] ?? ""),
+  //               // Fallback initial
+  //               style: const TextStyle(fontSize: 24, color: Colors.white),
+  //             ),
+  //           ),
+  //           decoration: const BoxDecoration(
+  //             color: Colors.blue,
+  //             image: DecorationImage(
+  //               image: NetworkImage(
+  //                 'https://example.com/background-image.jpg', // Optional background image
+  //               ),
+  //               fit: BoxFit.cover,
+  //             ),
+  //           ),
+  //         ),
+  //
+  //         // Drawer Items
+  //         ListTile(
+  //           leading: const Icon(Icons.person),
+  //           title: const Text('Profile'),
+  //           onTap: () {
+  //             Get.to(() => UserProfile()); // Close the drawer
+  //           },
+  //         ),
+  //         ListTile(
+  //           leading: const Icon(Icons.medical_services),
+  //           title: const Text('My Appointments'),
+  //           onTap: () {
+  //             Get.to(() => const AppointmentScreen()); // Close the drawer
+  //           },
+  //         ),
+  //
+  //         ListTile(
+  //           leading: const Icon(Icons.settings),
+  //           title: const Text('Settings'),
+  //           onTap: () {
+  //             Navigator.pop(context); // Close the drawer
+  //           },
+  //         ),
+  //         ListTile(
+  //           leading: const Icon(Icons.logout),
+  //           title: const Text('Logout'),
+  //           onTap: () {
+  //             Get.offAll(const LoginScreen());
+  //           },
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   customTextField(context) {
     return SizedBox(
@@ -231,11 +246,10 @@ class _HomeScreenState extends State<HomeScreen> {
       width: MediaQuery.of(context).size.width *
           0.5, // Use double.infinity for better readability
       child: TextField(
-       // onChanged: (value) {
-       //   _filterSearchResults(value)
-       // },
+        // onChanged: (value) {
+        //   _filterSearchResults(value)
+        // },
         decoration: InputDecoration(
-
           hintText: "Search here...",
           suffixIcon: Image.asset(
             "lib/assets/icons/search.png",

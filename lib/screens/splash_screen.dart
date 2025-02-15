@@ -19,7 +19,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Future.delayed(Duration(seconds: 2), () {
-      Get.off(() => LoginScreen());
+      Get.off(() => WelcomeScreen());
     });
   }
 

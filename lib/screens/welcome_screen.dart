@@ -1,8 +1,13 @@
+import 'package:findmydoctor/screens/login/login_screen.dart';
 import 'package:findmydoctor/screens/login_screen.dart';
+import 'package:findmydoctor/screens/registration/patient_registration.dart';
 import 'package:findmydoctor/utility/common_button.dart';
 import 'package:findmydoctor/utility/common_colors.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
 // import 'package:healthcare/screens/login_screen.dart';
 // import 'package:healthcare/utility/common_button.dart';
 // import 'package:healthcare/utility/common_colors.dart';
@@ -15,6 +20,8 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,12 +77,48 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             CommonButton(
                 buttonText: "Sign Up",
                 backgroundColor: Color(0xffCAD6FF),
-                onPressed: () {},
+                onPressed: () {
+                  Get.to(()=>PatientRegistration());
+                },
                 textColor: Color(0xff2260FF)),
+            IconButton( onPressed: () async {
+              var user = await signInWithGoogle();
+             print("user $user");
+            }, icon: Image.asset("lib/assets/images/welcome.png")) ,
+            SizedBox(height: 10),
+            TextButton(
+              onPressed: () {
+                Get.to(()=>LoginScreen());
+              },
+              child: Text(
+                "Already have an account? Log in",
+                style:
+                    TextStyle(fontWeight: FontWeight.w500, color: primaryColor, fontSize: 16),
+              ),
+            ),
             const SizedBox(height: 40),
           ],
         ),
       ),
     );
+  }
+  Future<User?> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) return null;
+
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      UserCredential userCredential = await _auth.signInWithCredential(credential);
+      return userCredential.user;
+    } catch (e) {
+      print("Google Sign-In Error: $e");
+      return null;
+    }
   }
 }

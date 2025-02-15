@@ -12,7 +12,20 @@
           "package_name": "com.example.findmydoctor"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "650924447820-42os2js5gt5smi8rn8fh90am71bninrt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.findmydoctor",
+            "certificate_hash": "7614ffdab451d3b69ca03f0aaec5c417b05fceea"
+          }
+        },
+        {
+          "client_id": "650924447820-kqlesab26sikn68jbnm43k19sde3he47.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBas3Us5hcadA3rST6KTLXgyS9JzQJ2aq0"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "650924447820-kqlesab26sikn68jbnm43k19sde3he47.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
